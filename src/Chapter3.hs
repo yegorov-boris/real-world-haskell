@@ -10,6 +10,7 @@ module Chapter3
     , direction
     , Direction (..)
     , directions
+    , scanConvexHull
     ) where
 
 import Data.List
@@ -36,13 +37,7 @@ isPal x = let n = length x `div` 2 in take n x == take n (reverse x)
 
 --6. Create a function that sorts a list of lists based on the length of each sublist
 sortByLen :: [[a]] -> [[a]]
-sortByLen = sortBy cmpLen
-
-cmpLen :: [a] -> [a] -> Ordering
-cmpLen a b
-  | length a < length b = LT
-  | length a > length b = GT
-  | otherwise = EQ
+sortByLen = sortBy (\a b -> length a `compare` length b)
 
 --7-8. Define a function that joins a list of lists together using a separator value
 --The separator should appear between elements of the list, but it should not follow the last element
@@ -72,8 +67,8 @@ direction (ax, ay) (bx, by) (cx, cy)
   | p < q = TurnL
   | otherwise = Straight
   where
-    p = (ax - bx) * (cy - by)
-    q = (ay - by) * (cx - bx)
+    p = (cx - bx) * (by - ay)
+    q = (bx - ax) * (cy - by)
 
 --12. Define a function that takes a list of two-dimensional points and computes the direction of each successive triple. Given a list of points [a,b,c,d,e], it should begin by computing the turn made by [a,b,c], then the turn made by [b,c,d], then [c,d,e]. Your function should return a list of Direction.
 directions :: (Ord a, Num a) => [(a, a)] -> [Direction]
@@ -82,3 +77,29 @@ directions [_] = []
 directions [_, _] = []
 directions [a, b, c] = [direction a b c]
 directions (a:b:c:t) = (direction a b c):directions (b:c:t)
+
+--13. Using the code from the preceding three exercises, implement Graham’s scan al- gorithm for the convex hull of a set of 2D points. You can find good description of what a convex hull (http://en.wikipedia.org/wiki/Convex_hull) is, and how the Graham scan algorithm (http://en.wikipedia.org/wiki/Graham_scan) should work, on Wikipedia (http://en.wikipedia.org/).
+scanConvexHull :: [(Double, Double)] -> [(Double, Double)]
+scanConvexHull [] = []
+scanConvexHull [_] = []
+scanConvexHull [_, _] = []
+scanConvexHull points = graham [p1, p0] pts
+  where
+    graham s [] = s
+    graham s (p:ps) = graham (p:checkStack p s) ps
+    checkStack p s =
+      if
+        (head s == p1) || (direction (head $ tail s) (head s) p /= TurnR)
+      then
+        s
+      else
+        tail s
+    p0 = minimumBy (\a b -> snd a `compare` snd b) points
+    (p1:pts) = sortBy byAngleDist $ delete p0 points
+    sub (ax, ay) (bx, by) = (bx - ax, by - ay)
+    dist a b = let (x, y) = sub a b in x*x + y*y
+    angle = uncurry (flip atan2) . sub p0
+    byAngleDist a b
+      | angle a > angle b = GT
+      | angle a < angle b = LT
+      | otherwise = dist p0 a `compare` dist p0 b

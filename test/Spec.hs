@@ -47,9 +47,13 @@ main =  hspec $ do
         height (Node "x" (Node "y" Empty Empty) (Node "x" Empty (Node "y" Empty Empty))) `shouldBe` 3
     describe "direction" $ do
       it "should get the direction" $ do
-        direction (1, 0) (0, 0) (0, 1) `shouldBe` TurnR
-        direction (0, 1) (0, 0) (1, 0) `shouldBe` TurnL
+        direction (0, 0) (1, 0) (1, (-1)) `shouldBe` TurnR
+        direction (0, 0) (1, 0) (1, 1) `shouldBe` TurnL
         direction (0, 0) (0, 1) (0, 2) `shouldBe` Straight
     describe "directions" $ do
       it "should scan a 2D points list with the direction window" $
         directions [(1, 0), (0, 0), (0, 1), (0, 2)] `shouldBe` [TurnR, Straight]
+    describe "scanConvexHull" $ do
+      it "should " $ shouldMatchList
+        (scanConvexHull [(5, 6), (3, 5), (5, 4), (4, 3), (5, 3), (3, 2)])
+        [(5, 6), (3, 5), (3, 2), (5, 3), (5, 4)]
