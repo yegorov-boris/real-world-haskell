@@ -5,6 +5,8 @@ module Chapter3
     , isPal
     , sortByLen
     , myIntersperse
+    , height
+    , Tree (..)
     ) where
 
 import Data.List
@@ -46,3 +48,13 @@ myIntersperse s xs = foldr f [] xs
   where
     f x [] = x
     f x acc = x ++ s:acc
+
+--9.Using the binary tree type that we defined earlier in this chapter, write a function that will determine the height of the tree. The height is the largest number of hops from the root to an Empty
+data Tree a = Node a (Tree a) (Tree a) | Empty deriving (Show)
+
+height :: Tree a -> Int
+height Empty = 0
+height (Node _ Empty Empty) = 1
+height (Node _ Empty r) = succ $! height r
+height (Node _ l Empty) = succ $! height l
+height (Node _ l r) = succ $! (max $! height l) $! height r

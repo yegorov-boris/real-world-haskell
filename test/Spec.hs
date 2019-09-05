@@ -39,3 +39,9 @@ main =  hspec $ do
         myIntersperse ',' [] `shouldBe` []
         myIntersperse ',' ["foo"] `shouldBe` "foo"
         myIntersperse ',' ["foo","bar","baz","quux"] `shouldBe` "foo,bar,baz,quux"
+    describe "height" $ do
+      it "should get the height of a binary tree" $ do
+        height (Node "x" Empty Empty) `shouldBe` 1
+        height (Node "x" Empty (Node "y" Empty Empty)) `shouldBe` 2
+        height (Node "x" (Node "x" Empty (Node "y" Empty Empty)) (Node "y" Empty Empty)) `shouldBe` 3
+        height (Node "x" (Node "y" Empty Empty) (Node "x" Empty (Node "y" Empty Empty))) `shouldBe` 3
