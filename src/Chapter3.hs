@@ -3,6 +3,8 @@ module Chapter3
     , mean
     , pal
     , isPal
+    , sortByLen
+    , myIntersperse
     ) where
 
 import Data.List
@@ -26,3 +28,21 @@ pal x = x ++ reverse x
 --5. Write a function that determines whether its input list is a palindrome.
 isPal :: Eq a => [a] -> Bool
 isPal x = let n = length x `div` 2 in take n x == take n (reverse x)
+
+--6. Create a function that sorts a list of lists based on the length of each sublist
+sortByLen :: [[a]] -> [[a]]
+sortByLen = sortBy cmpLen
+
+cmpLen :: [a] -> [a] -> Ordering
+cmpLen a b
+  | length a < length b = LT
+  | length a > length b = GT
+  | otherwise = EQ
+
+--7-8. Define a function that joins a list of lists together using a separator value
+--The separator should appear between elements of the list, but it should not follow the last element
+myIntersperse :: a -> [[a]] -> [a]
+myIntersperse s xs = foldr f [] xs
+  where
+    f x [] = x
+    f x acc = x ++ s:acc

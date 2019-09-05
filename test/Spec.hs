@@ -31,3 +31,11 @@ main =  hspec $ do
         isPal [42, 42, 42] `shouldBe` True
         isPal [42, 73, 42] `shouldBe` True
         isPal [42, 73, 41] `shouldBe` False
+    describe "sortByLen" $ do
+      it "should sort by length of elements" $ do
+        sortByLen ["a", "", ""] `shouldBe` ["", "", "a"]
+    describe "myIntersperse" $ do
+      it "should flatten with a separator" $ do
+        myIntersperse ',' [] `shouldBe` []
+        myIntersperse ',' ["foo"] `shouldBe` "foo"
+        myIntersperse ',' ["foo","bar","baz","quux"] `shouldBe` "foo,bar,baz,quux"
