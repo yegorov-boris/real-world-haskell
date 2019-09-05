@@ -7,6 +7,9 @@ module Chapter3
     , myIntersperse
     , height
     , Tree (..)
+    , direction
+    , Direction (..)
+    , directions
     ) where
 
 import Data.List
@@ -49,7 +52,7 @@ myIntersperse s xs = foldr f [] xs
     f x [] = x
     f x acc = x ++ s:acc
 
---9.Using the binary tree type that we defined earlier in this chapter, write a function that will determine the height of the tree. The height is the largest number of hops from the root to an Empty
+--9. Using the binary tree type that we defined earlier in this chapter, write a function that will determine the height of the tree. The height is the largest number of hops from the root to an Empty
 data Tree a = Node a (Tree a) (Tree a) | Empty deriving (Show)
 
 height :: Tree a -> Int
@@ -58,3 +61,24 @@ height (Node _ Empty Empty) = 1
 height (Node _ Empty r) = succ $! height r
 height (Node _ l Empty) = succ $! height l
 height (Node _ l r) = succ $! (max $! height l) $! height r
+
+data Direction = TurnR | TurnL | Straight deriving (Show, Eq)
+
+--10. Consider three two-dimensional points, a, b, and c. If we look at the angle formed by the line segment from a to b and the line segment from b to c, it turns left, turns right, or forms a straight line. Define a Direction data type that lets you represent these possibilities.
+--11. Write a function that calculates the turn made by three two-dimensional points and returns a Direction.
+direction :: (Ord a, Num a) => (a, a) -> (a, a) -> (a, a) -> Direction
+direction (ax, ay) (bx, by) (cx, cy)
+  | p > q = TurnR
+  | p < q = TurnL
+  | otherwise = Straight
+  where
+    p = (ax - bx) * (cy - by)
+    q = (ay - by) * (cx - bx)
+
+--12. Define a function that takes a list of two-dimensional points and computes the direction of each successive triple. Given a list of points [a,b,c,d,e], it should begin by computing the turn made by [a,b,c], then the turn made by [b,c,d], then [c,d,e]. Your function should return a list of Direction.
+directions :: (Ord a, Num a) => [(a, a)] -> [Direction]
+directions [] = []
+directions [_] = []
+directions [_, _] = []
+directions [a, b, c] = [direction a b c]
+directions (a:b:c:t) = (direction a b c):directions (b:c:t)
