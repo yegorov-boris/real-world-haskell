@@ -16,9 +16,18 @@ main =  hspec $ do
         mean [42.73, 73.42] `shouldBe` 58.075
     describe "pal" $ do
       it "should work for an empty list" $ let xs = []::[Int] in pal xs `shouldBe` xs
-      it "should work for a one element list" $ let xs = [42]::[Int] in pal xs `shouldBe` xs
-      it "should work for a not empty list" $
+      it "should work for one element lists" $ let xs = [42]::[Int] in pal xs `shouldBe` xs
+      it "should work for not empty lists" $
         let
           xs = [42, 73]::[Int]
           p = [42, 73, 73, 42]::[Int]
         in pal xs `shouldBe` p
+    describe "isPal" $ do
+      it "should work for an empty list" $ isPal ([]::[Int]) `shouldBe` True
+      it "should work for not empty lists" $ do
+        isPal [42] `shouldBe` True
+        isPal [42, 73] `shouldBe` False
+        isPal [42, 42] `shouldBe` True
+        isPal [42, 42, 42] `shouldBe` True
+        isPal [42, 73, 42] `shouldBe` True
+        isPal [42, 73, 41] `shouldBe` False

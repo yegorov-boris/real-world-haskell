@@ -2,6 +2,7 @@ module Chapter3
     ( len
     , mean
     , pal
+    , isPal
     ) where
 
 import Data.List
@@ -17,7 +18,11 @@ mean [] = 0
 mean x = let l = len x in foldl' (\s h -> s + h / fromIntegral l) 0 x
 
 --4. Turn a list into a palindrome; i.e., it should read the same both backward and forward. For example, given the list [1,2,3], your function should return [1,2,3,3,2,1].
-pal :: Eq a => [a] -> [a]
+pal :: [a] -> [a]
 pal [] = []
 pal x@[h] = x
 pal x = x ++ reverse x
+
+--5. Write a function that determines whether its input list is a palindrome.
+isPal :: Eq a => [a] -> Bool
+isPal x = let n = length x `div` 2 in take n x == take n (reverse x)
