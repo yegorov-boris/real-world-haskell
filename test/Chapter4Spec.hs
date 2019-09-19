@@ -26,3 +26,15 @@ spec = do
         splitWith (/= ' ') " a  " `shouldBe` ["a"]
         splitWith (/= ' ') "ab  " `shouldBe` ["ab"]
         splitWith (/= ' ') "   ab  c d   ef" `shouldBe` ["ab", "c", "d", "ef"]
+    describe "asInt_either" $ do
+      it "should parse Int from String" $ do
+        asInt_either "101" `shouldBe` Right 101
+        asInt_either "-31337" `shouldBe` Right (-31337)
+        asInt_either "1798" `shouldBe` Right 1798
+        asInt_either "" `shouldBe` Right 0
+        asInt_either "-" `shouldBe` Right 0
+        asInt_either "-3" `shouldBe` Right (-3)
+        asInt_either "33" `shouldBe` Right 33
+      it "should fail on incorrect string" $ do
+        asInt_either "2.7" `shouldBe` Left "non-digit '.'"
+        asInt_either "foo" `shouldBe` Left "non-digit 'o'"
