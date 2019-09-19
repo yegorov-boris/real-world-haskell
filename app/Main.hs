@@ -1,6 +1,18 @@
 module Main where
 
-import Chapter3
+import System.Environment (getArgs)
+import Chapter4 (transpose)
 
 main :: IO ()
-main = putStrLn $ show $ scanConvexHull [(5, 6), (3, 5), (5, 4), (4, 3), (5, 3), (3, 2)]
+main = mainWith myFunction
+  where
+    mainWith function = do
+      args <- getArgs
+      case args of
+        [input,output] -> interactWith function input output
+        _ -> putStrLn "error: exactly two arguments needed"
+    myFunction = transpose
+
+interactWith function inputFile outputFile = do
+  input <- readFile inputFile
+  writeFile outputFile (function input)
