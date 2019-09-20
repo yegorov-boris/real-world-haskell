@@ -7,6 +7,14 @@ module Chapter4
     , firstWords
     , transpose
     , asInt_either
+    , myConcat
+    , takeWhileFoldr
+    , takeWhileRec
+    , myGroupBy
+    , myAny
+    , myWords
+    , myUnlines
+    , myCycle
     ) where
 
 import Data.List (intercalate, foldl')
@@ -118,3 +126,47 @@ toDigit 'E' = Right 14
 toDigit 'f' = Right 15
 toDigit 'F' = Right 15
 toDigit c = Left $ "non-digit '" ++ c:"'"
+
+--5 - 6. Write your own definition of concat using foldr
+myConcat :: [[a]] -> [a]
+myConcat = foldr (flip $ foldr (:)) []
+
+--7. Write your own definition of the standard takeWhile function, first using explicit recursion, and then foldr
+takeWhileFoldr :: (a -> Bool) -> [a] -> [a]
+takeWhileFoldr f = foldr (\x r -> if f x == True then x:r else []) []
+
+takeWhileRec :: (a -> Bool) -> [a] -> [a]
+takeWhileRec _ [] = []
+takeWhileRec f (h:t) = if f h == True then h : takeWhileRec f t else []
+
+--8 - 9. write your own implementation of Data.List.groupBy using a fold
+myGroupBy :: (a -> a -> Bool) -> [a] -> [[a]]
+myGroupBy f = foldr scanner []
+  where
+    scanner x [] = [[x]]
+    scanner x r@(h:t) = if f x $ head h then (x:h):t else [x]:r
+
+--10. How many of the following Prelude functions can you rewrite using list folds?
+-- any
+-- cycle
+-- words
+-- unlines
+--For those functions where you can use either foldl' or foldr, which is more appropriate in each case?
+myAny :: (a -> Bool) -> [a] -> Bool
+myAny f = foldr (\x r -> r || f x) False
+
+myWords :: String -> [String]
+myWords = snd . foldr scanner (False, [])
+  where
+    scanner x r@(flag, acc) = if x `elem` " \r\n" then (False, acc) else processWord x r
+    processWord x (False, acc) = (True, [x]:acc)
+    processWord x (True, (h:t)) = (True, (x:h):t)
+
+myUnlines :: [String] -> String
+myUnlines = foldr (\x r -> foldr (:) ('\n':r) x) []
+
+myCycle :: [a] -> [a]
+myCycle a = foldr (:) (cycle' a) a
+  where
+    cycle' [] = []
+    cycle' xs = concat $ repeat xs

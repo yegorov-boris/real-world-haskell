@@ -38,3 +38,45 @@ spec = do
       it "should fail on incorrect string" $ do
         asInt_either "2.7" `shouldBe` Left "non-digit '.'"
         asInt_either "foo" `shouldBe` Left "non-digit 'o'"
+    describe "myConcat" $ do
+      it "should work with empty lists" $ do
+        myConcat ([]::[String]) `shouldBe` ""
+        myConcat [""] `shouldBe` ""
+        myConcat ["", ""] `shouldBe` ""
+      it "should work with not empty lists" $ myConcat ["", "ab", "c", ""] `shouldBe` "abc"
+    describe "takeWhileFoldr" $ do
+      it "should be takeWhile" $ do
+        takeWhileFoldr (/= ' ') "" `shouldBe` ""
+        takeWhileFoldr (/= ' ') "   " `shouldBe` ""
+        takeWhileFoldr (/= ' ') "abc " `shouldBe` "abc"
+        takeWhileFoldr (/= ' ') "a  " `shouldBe` "a"
+        takeWhileFoldr (/= ' ') " a" `shouldBe` ""
+        takeWhileFoldr (/= ' ') "  a" `shouldBe` ""
+    describe "takeWhileRec" $ do
+      it "should be takeWhile" $ do
+        takeWhileRec (/= ' ') "" `shouldBe` ""
+        takeWhileRec (/= ' ') "   " `shouldBe` ""
+        takeWhileRec (/= ' ') "abc " `shouldBe` "abc"
+        takeWhileRec (/= ' ') "a  " `shouldBe` "a"
+        takeWhileRec (/= ' ') " a" `shouldBe` ""
+        takeWhileRec (/= ' ') "  a" `shouldBe` ""
+    describe "myGroupBy" $ do
+      it "should be groupBy" $ myGroupBy (==) "Mississippi" `shouldBe` ["M","i","ss","i","ss","i","pp","i"]
+    describe "myAny" $ do
+      it "should be any" $ do
+        myAny (== 'a') "" `shouldBe` False
+        myAny (== 'a') "a" `shouldBe` True
+        myAny (== 'a') "ba" `shouldBe` True
+        myAny (== 'a') "bc" `shouldBe` False
+    describe "myWords" $ do
+      it "should be words" $ myWords "Lorem ipsum\ndolor" `shouldBe` ["Lorem","ipsum","dolor"]
+    describe "myUnlines" $ do
+      it "should be unlines" $ myUnlines ["Hello", "World", "!"] `shouldBe` "Hello\nWorld\n!\n"
+    describe "myCycle" $ do
+      it "should be cycle" $ do
+        myCycle "" `shouldBe` ""
+        (head $ myCycle "a") `shouldBe` 'a'
+        (head $ tail $ myCycle "a") `shouldBe` 'a'
+        (head $ myCycle "ab") `shouldBe` 'a'
+        (head $ tail $ myCycle "ab") `shouldBe` 'b'
+        (head $ tail $ tail $ myCycle "ab") `shouldBe` 'a'
